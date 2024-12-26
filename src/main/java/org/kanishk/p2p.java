@@ -1,6 +1,7 @@
 package org.kanishk;
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 public class p2p {
     int startPoint = 6000;
     int endPoint = 6100;
@@ -12,11 +13,16 @@ public class p2p {
                     Socket s = ss.accept();//blocking call, waits for the client to connect
 
                     InputStream input = s.getInputStream();//reads message from client
+                    // int charactersToRead = 10;
+                    // byte[] b = new byte[charactersToRead];
+                    // input.read(b);
+                    // ByteBuffer
                     BufferedReader br = new BufferedReader(new InputStreamReader(input));
                     String Message = br.readLine();
                     System.out.println("message from client :"+Message);
 
                     OutputStream output = s.getOutputStream();//sends acknowledgement to the client
+                    //out.write("This data is going to be sent".getBytes());
                     PrintWriter writer = new PrintWriter(output, true);
                     writer.println("Hello Client (from the server of "+s.getLocalPort()+")");
 
@@ -33,7 +39,7 @@ public class p2p {
 
 
     public void clientSide()throws IOException{
-//       while(true){//so that the first port can connect to ports opened after its creation
+    //   while(true){//so that the first port can connect to ports opened after its creation
 
            for(int port = startPoint; port <= endPoint; port++) {
                if(port == p2p.port){
@@ -42,7 +48,7 @@ public class p2p {
                try (Socket s = new Socket("localhost", port)) {
                    System.out.println("connected to "+port);//sends message to the server
                     OutputStream output = s.getOutputStream();
-                    PrintWriter writer =new PrintWriter(output,true);
+                    PrintWriter writer =new PrintWriter(output,true); //lazy function execution
                     writer.println("Hello server "+s.getPort());
 
                    InputStream input = s.getInputStream();
@@ -54,7 +60,7 @@ public class p2p {
                catch(IOException e){
                }
            }
-//       }
+    //   }
     }
 
     public static void main(String[] args) {
